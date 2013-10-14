@@ -2,31 +2,79 @@ package com.example.mandown;
 
 import java.util.List;
 
+import android.app.ActionBar;
+import android.app.ActionBar.Tab;
 import android.app.Activity;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.view.Menu;
 
-public class MainActivity extends Activity implements
+public class MainActivity extends Activity implements ActionBar.TabListener,
 		AccelerometerSensorHandler {
+
+	interface UpdatableAccordingToAccelerometer {
+		public void update(AccelerometerSensorHandler sensorHandler);
+	}
 
 	private SensorManager sensorManager;
 	private List<Sensor> accelerometersList;
 	private Sensor maximumResolutionAccelerometerSensor;
 	private AccelerometerListener accelerometerListener;
 
-	private MainActivityUIHandler uiHandler;
+	private Tab measureTab;
+	private Tab databaseTab;
+
+	private ActionBar actionBar;
+
+	private FragmentManager fragmentManager;
+
+	private MeasureFragment measureFragment;
+	private DumbToDatabaseFragment databaseFragment;
 
 	private Boolean[] handlerSynchronizerObject = new Boolean[0];
 
 	float[] accelerometerValues;
+	float[] maxAccelerometerValues;
+	float[] minAccelerometerValues;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+
+		actionBar = getActionBar();
+
+		measureFragment = new MeasureFragment(this);
+		databaseFragment = new DumbToDatabaseFragment();
+
+		measureTab = actionBar.newTab().setTag(measureFragment).setText("Live")
+				.setTabListener(this);
+		databaseTab = actionBar.newTab().setTag(databaseFragment)
+				.setText("AlsoLive").setTabListener(this);
+
+		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+
+		actionBar.addTab(measureTab, true);
+		actionBar.addTab(databaseTab, false);
+
+		actionBar.setDisplayShowHomeEnabled(false);
+		actionBar.setDisplayShowTitleEnabled(false);
+
 		setContentView(R.layout.activity_main);
-		initiateFields();
+
+		fragmentManager = getFragmentManager();
+		FragmentTransaction ft = fragmentManager.beginTransaction();
+		ft.add(R.id.fragments, measureFragment);
+		ft.commit();
+
+		initiateSensor();
+		initiateValues();
+		accelerometerValues = new float[3];
+
+		accelerometerListener.add(measureFragment);
+
 		startProcessing();
 	}
 
@@ -35,16 +83,6 @@ public class MainActivity extends Activity implements
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.main, menu);
 		return true;
-	}
-
-	private void initiateFields() {
-		initiateViews();
-		initiateSensor();
-		accelerometerValues = new float[3];
-	}
-
-	private void initiateViews() {
-		uiHandler = new MainActivityUIHandler(this, this);
 	}
 
 	private void initiateSensor() {
@@ -67,6 +105,16 @@ public class MainActivity extends Activity implements
 		return maxRes;
 	}
 
+	private void initiateValues() {
+		final int minimumValue = -100;
+		final int maximumValue = 100;
+		minAccelerometerValues = new float[] { maximumValue, maximumValue,
+				maximumValue };
+		maxAccelerometerValues = new float[] { minimumValue, minimumValue,
+				minimumValue };
+
+	}
+
 	private void startProcessing() {
 		sensorManager.registerListener(accelerometerListener,
 				maximumResolutionAccelerometerSensor,
@@ -77,11 +125,40 @@ public class MainActivity extends Activity implements
 	public void setValues(float[] values) {
 		assert (3 == values.length);
 		synchronized (handlerSynchronizerObject) {
-			accelerometerValues[0] = values[0];
-			accelerometerValues[1] = values[1];
-			accelerometerValues[2] = values[2];
+			setXValue(values[0]);
+			setYValue(values[1]);
+			setZValue(values[2]);
 		}
-		uiHandler.assignValuesToUI(accelerometerValues);
+	}
+
+	private void setXValue(float value) {
+		accelerometerValues[0] = value;
+		if (value > maxAccelerometerValues[0]) {
+			maxAccelerometerValues[0] = value;
+		}
+		if (value < minAccelerometerValues[0]) {
+			minAccelerometerValues[0] = value;
+		}
+	}
+
+	private void setYValue(float value) {
+		accelerometerValues[1] = value;
+		if (value > maxAccelerometerValues[1]) {
+			maxAccelerometerValues[1] = value;
+		}
+		if (value < minAccelerometerValues[1]) {
+			minAccelerometerValues[1] = value;
+		}
+	}
+
+	private void setZValue(float value) {
+		accelerometerValues[2] = value;
+		if (value > maxAccelerometerValues[2]) {
+			maxAccelerometerValues[2] = value;
+		}
+		if (value < minAccelerometerValues[2]) {
+			minAccelerometerValues[2] = value;
+		}
 	}
 
 	@Override
@@ -93,5 +170,33 @@ public class MainActivity extends Activity implements
 			result[2] = accelerometerValues[2];
 		}
 		return result;
+	}
+
+	@Override
+	public float[] getMaxValues() {
+		return maxAccelerometerValues;
+	}
+
+	@Override
+	public float[] getMinValues() {
+		return minAccelerometerValues;
+	}
+
+	@Override
+	public void onTabReselected(Tab tab, FragmentTransaction ft) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void onTabSelected(Tab tab, FragmentTransaction ft) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void onTabUnselected(Tab tab, FragmentTransaction ft) {
+		// TODO Auto-generated method stub
+
 	}
 }

@@ -1,13 +1,11 @@
 package com.example.mandown;
 
-import android.app.Activity;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
-public class MainActivityUIHandler implements OnClickListener {
+public class MeasureFragmentUIHandler implements OnClickListener {
 	private TextView axisXValue;;
 	private TextView axisYValue;
 	private TextView axisZValue;
@@ -23,7 +21,7 @@ public class MainActivityUIHandler implements OnClickListener {
 	private Button measureButton;
 	private Button clearMaxButton;
 
-	private Activity activity;
+	private View root;
 
 	Boolean canAssign = true;
 
@@ -31,9 +29,10 @@ public class MainActivityUIHandler implements OnClickListener {
 
 	private AccelerometerSensorHandler sensorHandler;
 
-	public MainActivityUIHandler(Activity activity,
+	public MeasureFragmentUIHandler(View view,
 			AccelerometerSensorHandler sensorHandler) {
-		initializeUIElements(activity);
+		root = view;
+		initializeUIElements();
 		initializeSensor(sensorHandler);
 	}
 
@@ -53,40 +52,40 @@ public class MainActivityUIHandler implements OnClickListener {
 		assignMaxValues(values);
 	}
 
-	private void initializeUIElements(Activity activity) {
-		initializeTextViews(activity);
-		initializeButtons(activity);
+	private void initializeUIElements() {
+		initializeTextViews();
+		initializeButtons();
 	}
 
-	private void initializeButtons(Activity activity) {
-		measureButton = (Button) activity.findViewById(R.id.measureButton);
+	private void initializeButtons() {
+		measureButton = (Button) root.findViewById(R.id.measureButton);
 		measureButton.setOnClickListener(this);
-		clearMaxButton = (Button) activity.findViewById(R.id.clearMaxButton);
+		clearMaxButton = (Button) root.findViewById(R.id.clearMaxButton);
 		clearMaxButton.setOnClickListener(this);
 	}
 
-	private void initializeTextViews(Activity activity) {
-		initializeValueFields(activity);
-		initializeCurrentFields(activity);
-		initializeMaxFields(activity);
+	private void initializeTextViews() {
+		initializeValueFields();
+		initializeCurrentFields();
+		initializeMaxFields();
 	}
 
-	private void initializeMaxFields(Activity activity) {
-		axisXMax = (TextView) activity.findViewById(R.id.axisX_max);
-		axisYMax = (TextView) activity.findViewById(R.id.axisY_max);
-		axisZMax = (TextView) activity.findViewById(R.id.axisZ_max);
+	private void initializeMaxFields() {
+		axisXMax = (TextView) root.findViewById(R.id.axisX_max);
+		axisYMax = (TextView) root.findViewById(R.id.axisY_max);
+		axisZMax = (TextView) root.findViewById(R.id.axisZ_max);
 	}
 
-	private void initializeCurrentFields(Activity activity) {
-		axisXSnap = (TextView) activity.findViewById(R.id.axisXSnap);
-		axisYSnap = (TextView) activity.findViewById(R.id.axisYSnap);
-		axisZSnap = (TextView) activity.findViewById(R.id.axisZSnap);
+	private void initializeCurrentFields() {
+		axisXSnap = (TextView) root.findViewById(R.id.axisXSnap);
+		axisYSnap = (TextView) root.findViewById(R.id.axisYSnap);
+		axisZSnap = (TextView) root.findViewById(R.id.axisZSnap);
 	}
 
-	private void initializeValueFields(Activity activity) {
-		axisXValue = (TextView) activity.findViewById(R.id.axisX_value);
-		axisYValue = (TextView) activity.findViewById(R.id.axisY_value);
-		axisZValue = (TextView) activity.findViewById(R.id.axisZ_value);
+	private void initializeValueFields() {
+		axisXValue = (TextView) root.findViewById(R.id.axisX_value);
+		axisYValue = (TextView) root.findViewById(R.id.axisY_value);
+		axisZValue = (TextView) root.findViewById(R.id.axisZ_value);
 	}
 
 	private void assignCurrentValues(float[] values) {
@@ -126,15 +125,6 @@ public class MainActivityUIHandler implements OnClickListener {
 			}
 		});
 		a.start();
-	}
-
-	private void showErrorMessage() {
-		Toast.makeText(activity, "Something went wrong!", Toast.LENGTH_LONG)
-				.show();
-		axisXValue.setText("Try restarting app!");
-		axisYValue.setText(null);
-		axisZValue.setText(null);
-
 	}
 
 	@Override
