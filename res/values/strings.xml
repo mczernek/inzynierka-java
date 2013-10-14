@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">ManDown</string>
+    <string name="action_settings">Settings</string>
+    <string name="MainActivity_title">ManDown accelerometers</string>
+    <string name="axisX_title">Axis X</string>
+    <string name="axisY_title">Axis Y</string>
+    <string name="axisZ_title">Axis Z</string>
+    <string name="SnapshotButton">Measure</string>
+    <string name="clearMaxButton">Clear Max</string>
+    
+</resources>
