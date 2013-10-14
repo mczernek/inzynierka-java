@@ -5,6 +5,7 @@ import java.util.List;
 import android.app.ActionBar;
 import android.app.ActionBar.Tab;
 import android.app.Activity;
+import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.hardware.Sensor;
@@ -65,9 +66,6 @@ public class MainActivity extends Activity implements ActionBar.TabListener,
 		setContentView(R.layout.activity_main);
 
 		fragmentManager = getFragmentManager();
-		FragmentTransaction ft = fragmentManager.beginTransaction();
-		ft.add(R.id.fragments, measureFragment);
-		ft.commit();
 
 		initiateSensor();
 		initiateValues();
@@ -190,8 +188,7 @@ public class MainActivity extends Activity implements ActionBar.TabListener,
 
 	@Override
 	public void onTabSelected(Tab tab, FragmentTransaction ft) {
-		// TODO Auto-generated method stub
-
+		ft.replace(R.id.fragments, (Fragment) tab.getTag());
 	}
 
 	@Override
