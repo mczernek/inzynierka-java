@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/LinearLayout1"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:orientation="vertical">
 
     <TextView
@@ -15,9 +15,9 @@
         android:textStyle="bold" />
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="left|top"
+        android:layout_gravity="left|top|fill_horizontal"
         android:orientation="vertical" >
 
         <LinearLayout
@@ -30,23 +30,22 @@
             <TextView
                 android:id="@+id/axisX_title"
                 android:text="@string/axisX_title"
-                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_width="match_parent"
                 android:textSize="30sp"
-                android:ems="10"
                 android:layout_weight="1" />
 
             <TextView
                 android:id="@+id/axisX_value"
-                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_width="match_parent"
                 android:gravity="center_vertical|center_horizontal"
                 android:layout_weight="1" />
             
             <TextView
                 android:id="@+id/axisX_max"
-                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_width="match_parent"
                 android:gravity="center_vertical|center_horizontal"
                 android:layout_weight="1" />
 
@@ -56,6 +55,7 @@
             android:layout_margin="5dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_gravity="fill_horizontal"
             android:weightSum="3"
             android:orientation="horizontal" >
 
@@ -65,20 +65,19 @@
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
                 android:textSize="30sp"
-                android:ems="10"
                 android:layout_weight="1" />
 
             <TextView
                 android:id="@+id/axisY_value"
-                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_width="match_parent"
                 android:gravity="center_vertical|center_horizontal"
                 android:layout_weight="1" />
             
             <TextView
                 android:id="@+id/axisY_max"
-                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_width="match_parent"
                 android:gravity="center_vertical|center_horizontal"
                 android:layout_weight="1" />
 
@@ -88,6 +87,7 @@
             android:layout_margin="5dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_gravity="fill_horizontal"
             android:weightSum="3"
             android:orientation="horizontal" >
 
@@ -97,20 +97,19 @@
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
                 android:textSize="30sp"
-                android:ems="10"
                 android:layout_weight="1" />
 
             <TextView
                 android:id="@+id/axisZ_value"
-                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_width="match_parent"
                 android:gravity="center_vertical|center_horizontal"
                 android:layout_weight="1" />
             
             <TextView
                 android:id="@+id/axisZ_max"
-                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_width="match_parent"
                 android:gravity="center_vertical|center_horizontal"
                 android:layout_weight="1" />
 
@@ -134,7 +133,6 @@
             android:background="#C0C0C0"
             android:textSize="15sp"
             android:layout_weight="1"
-            android:ems="10"
             android:layout_margin="5dp" />
 
         <TextView
@@ -144,7 +142,6 @@
             android:background="#C0C0C0"
             android:textSize="15sp"
             android:layout_weight="1"
-            android:ems="10"
             android:layout_margin="5dp"  />
 
 
@@ -155,7 +152,6 @@
             android:background="#C0C0C0"
             android:textSize="15sp"
             android:layout_weight="1"
-            android:ems="10"
             android:layout_margin="5dp" />
 
     </LinearLayout>
@@ -173,7 +169,6 @@
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
             android:layout_weight="1"
-            android:ems="10"
             android:text="axisX" />
 
         <TextView

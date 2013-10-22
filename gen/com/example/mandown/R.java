@@ -21,11 +21,14 @@ public final class R {
         public static final int activity_vertical_margin=0x7f040001;
     }
     public static final class drawable {
-        public static final int ic_launcher=0x7f020000;
+        public static final int download_arrow=0x7f020000;
+        public static final int ic_launcher=0x7f020001;
+        public static final int play_button=0x7f020002;
+        public static final int stop_button=0x7f020003;
     }
     public static final class id {
         public static final int LinearLayout1=0x7f080002;
-        public static final int action_settings=0x7f080014;
+        public static final int action_settings=0x7f080017;
         public static final int axisXSnap=0x7f08000c;
         public static final int axisXSnapTitle=0x7f08000f;
         public static final int axisX_max=0x7f080005;
@@ -44,6 +47,9 @@ public final class R {
         public static final int clearMaxButton=0x7f080013;
         public static final int fragments=0x7f080000;
         public static final int measureButton=0x7f080012;
+        public static final int play_button=0x7f080014;
+        public static final int save_button=0x7f080016;
+        public static final int stop_button=0x7f080015;
         public static final int textView1=0x7f080001;
     }
     public static final class layout {

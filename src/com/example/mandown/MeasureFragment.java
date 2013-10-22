@@ -51,4 +51,9 @@ public class MeasureFragment extends Fragment implements
 		uiHandler.assignValuesToUI(sensorHandler.getValues());
 	}
 
+	@Override
+	public void onDestroyView() {
+		super.onDestroyView();
+	}
+
 }

@@ -6,12 +6,12 @@ import android.app.ActionBar;
 import android.app.ActionBar.Tab;
 import android.app.Activity;
 import android.app.Fragment;
-import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.view.Menu;
+import android.view.MenuItem;
 
 public class MainActivity extends Activity implements ActionBar.TabListener,
 		AccelerometerSensorHandler {
@@ -25,12 +25,13 @@ public class MainActivity extends Activity implements ActionBar.TabListener,
 	private Sensor maximumResolutionAccelerometerSensor;
 	private AccelerometerListener accelerometerListener;
 
+	private MenuButtons data;
+	private MeasurmentsRecorder recorder;
+
 	private Tab measureTab;
 	private Tab databaseTab;
 
 	private ActionBar actionBar;
-
-	private FragmentManager fragmentManager;
 
 	private MeasureFragment measureFragment;
 	private DumbToDatabaseFragment databaseFragment;
@@ -45,15 +46,17 @@ public class MainActivity extends Activity implements ActionBar.TabListener,
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
+		recorder = new MeasurmentsRecorder(this, this);
+
 		actionBar = getActionBar();
 
 		measureFragment = new MeasureFragment(this);
 		databaseFragment = new DumbToDatabaseFragment();
 
-		measureTab = actionBar.newTab().setTag(measureFragment).setText("Live")
-				.setTabListener(this);
+		measureTab = actionBar.newTab().setTag(measureFragment)
+				.setText("Values").setTabListener(this);
 		databaseTab = actionBar.newTab().setTag(databaseFragment)
-				.setText("AlsoLive").setTabListener(this);
+				.setText("Charts").setTabListener(this);
 
 		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 
@@ -64,8 +67,6 @@ public class MainActivity extends Activity implements ActionBar.TabListener,
 		actionBar.setDisplayShowTitleEnabled(false);
 
 		setContentView(R.layout.activity_main);
-
-		fragmentManager = getFragmentManager();
 
 		initiateSensor();
 		initiateValues();
@@ -80,6 +81,10 @@ public class MainActivity extends Activity implements ActionBar.TabListener,
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.main, menu);
+
+		data = new MenuButtons(menu);
+		data.setInitialState();
+
 		return true;
 	}
 
@@ -116,7 +121,10 @@ public class MainActivity extends Activity implements ActionBar.TabListener,
 	private void startProcessing() {
 		sensorManager.registerListener(accelerometerListener,
 				maximumResolutionAccelerometerSensor,
-				SensorManager.SENSOR_DELAY_FASTEST);
+				SensorManager.SENSOR_DELAY_UI);
+		sensorManager.registerListener(recorder,
+				maximumResolutionAccelerometerSensor,
+				SensorManager.SENSOR_DELAY_NORMAL);
 	}
 
 	@Override
@@ -178,6 +186,23 @@ public class MainActivity extends Activity implements ActionBar.TabListener,
 	@Override
 	public float[] getMinValues() {
 		return minAccelerometerValues;
+	}
+
+	@Override
+	public boolean onMenuItemSelected(int featureId, MenuItem item) {
+		switch (item.getItemId()) {
+		case R.id.play_button:
+			recorder.startRecording(data);
+			return true;
+		case R.id.stop_button:
+			recorder.stopRecording(data);
+			return true;
+		case R.id.save_button:
+			recorder.stopRecordingAndSaveResults(data, this, "results.txt");
+			return true;
+		default:
+			return false;
+		}
 	}
 
 	@Override
