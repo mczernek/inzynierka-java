@@ -35,4 +35,10 @@ public class MenuButtons {
 		saveButton.setEnabled(true);
 	}
 
+	public void setSavedState(){
+		startButton.setVisible(true);
+		stopButton.setVisible(false);
+		saveButton.setVisible(true);
+		saveButton.setEnabled(false);
+	}
 }

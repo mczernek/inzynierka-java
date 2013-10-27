@@ -19,6 +19,8 @@ public class MainActivity extends Activity implements ActionBar.TabListener,
 	interface UpdatableAccordingToAccelerometer {
 		public void update(AccelerometerSensorHandler sensorHandler);
 	}
+	
+	private SaveToFileDialogFragment saveDialog;
 
 	private SensorManager sensorManager;
 	private List<Sensor> accelerometersList;
@@ -26,10 +28,10 @@ public class MainActivity extends Activity implements ActionBar.TabListener,
 	private AccelerometerListener accelerometerListener;
 
 	private MenuButtons data;
-	private MeasurmentsRecorder recorder;
+	private AccelerometerRecorderManager recorder;
 
 	private Tab measureTab;
-	private Tab databaseTab;
+	private Tab chartsTab;
 
 	private ActionBar actionBar;
 
@@ -41,12 +43,9 @@ public class MainActivity extends Activity implements ActionBar.TabListener,
 	float[] accelerometerValues;
 	float[] maxAccelerometerValues;
 	float[] minAccelerometerValues;
-
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-
-		recorder = new MeasurmentsRecorder(this, this);
 
 		actionBar = getActionBar();
 
@@ -55,26 +54,28 @@ public class MainActivity extends Activity implements ActionBar.TabListener,
 
 		measureTab = actionBar.newTab().setTag(measureFragment)
 				.setText("Values").setTabListener(this);
-		databaseTab = actionBar.newTab().setTag(databaseFragment)
+		chartsTab = actionBar.newTab().setTag(databaseFragment)
 				.setText("Charts").setTabListener(this);
 
 		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 
 		actionBar.addTab(measureTab, true);
-		actionBar.addTab(databaseTab, false);
+		actionBar.addTab(chartsTab, false);
 
 		actionBar.setDisplayShowHomeEnabled(false);
 		actionBar.setDisplayShowTitleEnabled(false);
 
 		setContentView(R.layout.activity_main);
 
-		initiateSensor();
+		initializeSensor();
 		initiateValues();
 		accelerometerValues = new float[3];
 
 		accelerometerListener.add(measureFragment);
+		
+		saveDialog = new SaveToFileDialogFragment();
 
-		startProcessing();
+		super.onCreate(savedInstanceState);
 	}
 
 	@Override
@@ -84,11 +85,15 @@ public class MainActivity extends Activity implements ActionBar.TabListener,
 
 		data = new MenuButtons(menu);
 		data.setInitialState();
+		
+		recorder = new AccelerometerRecorderManager(this, this, data);
+		
+		startProcessing();
 
 		return true;
 	}
 
-	private void initiateSensor() {
+	private void initializeSensor() {
 		sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
 		accelerometersList = sensorManager
 				.getSensorList(Sensor.TYPE_ACCELEROMETER);
@@ -124,7 +129,7 @@ public class MainActivity extends Activity implements ActionBar.TabListener,
 				SensorManager.SENSOR_DELAY_UI);
 		sensorManager.registerListener(recorder,
 				maximumResolutionAccelerometerSensor,
-				SensorManager.SENSOR_DELAY_NORMAL);
+				SensorManager.SENSOR_DELAY_FASTEST);
 	}
 
 	@Override
@@ -192,13 +197,13 @@ public class MainActivity extends Activity implements ActionBar.TabListener,
 	public boolean onMenuItemSelected(int featureId, MenuItem item) {
 		switch (item.getItemId()) {
 		case R.id.play_button:
-			recorder.startRecording(data);
+			recorder.startRecording();
 			return true;
 		case R.id.stop_button:
-			recorder.stopRecording(data);
+			recorder.stopRecording();
 			return true;
 		case R.id.save_button:
-			recorder.stopRecordingAndSaveResults(data, this, "results.txt");
+			saveDialog.show(getFragmentManager(), "Si", recorder);
 			return true;
 		default:
 			return false;
