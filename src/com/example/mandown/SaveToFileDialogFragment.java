@@ -4,15 +4,14 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
-import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.KeyEvent;
 import android.widget.EditText;
-import android.widget.TextView;
+
+import com.example.mandown.utils.FilenameUtils;
 
 
 
@@ -50,7 +49,7 @@ public class SaveToFileDialogFragment extends DialogFragment implements DialogIn
 					editText.setHint("Nazwa pliku");
 					dialog.getButton(DialogInterface.BUTTON_POSITIVE).setEnabled(false);
 				}else{
-					editText.setText(filename);
+					editText.setText(FilenameUtils.getIncrementedFilename(filename));
 					dialog.getButton(DialogInterface.BUTTON_POSITIVE).setEnabled(true);
 				}			
 			}
@@ -59,15 +58,15 @@ public class SaveToFileDialogFragment extends DialogFragment implements DialogIn
 	}
 
 	@Override
-	public void onClick(DialogInterface arg0, int arg1) {
-		switch(arg1){
+	public void onClick(DialogInterface di, int buttonId) {
+		switch(buttonId){
 		case DialogInterface.BUTTON_POSITIVE:
 			filename = editText.getText().toString();
-			recorder.saveResults(activity, filename);
-			arg0.dismiss();
+			recorder.saveResults(activity, FilenameUtils.getFilenameWithExtension(filename));
+			di.dismiss();
 			break;
 		case DialogInterface.BUTTON_NEGATIVE:
-			arg0.cancel();
+			di.cancel();
 			break;
 		}
 	}
@@ -91,8 +90,8 @@ public class SaveToFileDialogFragment extends DialogFragment implements DialogIn
 	}
 
 	@Override
-	public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
-		if(arg0.length()>0){
+	public void onTextChanged(CharSequence name, int arg1, int arg2, int arg3) {
+		if(name.length()>0){
 			dialog.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(true);
 		}else{
 			dialog.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false);
