@@ -11,5 +11,9 @@
     <string name="clearMaxButton">Clear Max</string>
     <string name="title_activity_main">MainActivity</string>
     <string name="hello_world">Hello world!</string>
+    
+    <string name="choose_filter_key">FILTER_CHOOSE_KEY</string>
+    <string name="choose_filter">Filter type</string>
+    <string name="choose_filter_summary">Choose filter type to be applied</string>
 
 </resources>
