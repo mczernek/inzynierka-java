@@ -70,6 +70,7 @@ public class SettingsActivity extends PreferenceActivity {
 		filterPref.setEntryValues(entryValues);
 		filterPref.setDefaultValue(Integer.toString(FilterFactory
 				.getFilterIndex()));
+		filterPref.setValue(Integer.toString(FilterFactory.getFilterIndex()));
 
 		filterPref.setOnPreferenceChangeListener(filterPrefsChangeListener);
 
