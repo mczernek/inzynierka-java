@@ -14,6 +14,7 @@ import android.content.Intent;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -82,6 +83,14 @@ public class MainActivity extends Activity implements ActionBar.TabListener,
 		saveDialog = new SaveToFileDialogFragment();
 
 		super.onCreate(savedInstanceState);
+
+		Log.d("CHUJ",
+				"Sensor range: "
+						+ maximumResolutionAccelerometerSensor
+								.getMaximumRange() + ", resolution: "
+						+ maximumResolutionAccelerometerSensor.getResolution()
+						+ "delay: "
+						+ maximumResolutionAccelerometerSensor.getMinDelay());
 	}
 
 	@Override

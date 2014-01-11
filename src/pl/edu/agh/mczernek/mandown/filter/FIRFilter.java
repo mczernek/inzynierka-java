@@ -34,6 +34,8 @@ public abstract class FIRFilter implements AccelerometerValueFilter {
 		if (values.size() > factors.length) {
 			throw new IllegalArgumentException(
 					"Values and factors dimensions must match");
+		} else if (values.size() < factors.length) {
+			return values.getLast();
 		}
 
 		long time = values.getLast().getTime();

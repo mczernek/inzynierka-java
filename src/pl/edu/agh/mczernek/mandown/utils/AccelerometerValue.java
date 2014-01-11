@@ -24,13 +24,13 @@ public class AccelerometerValue {
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		sb.append(time);
-		sb.append(",");
+		sb.append("\t");
 		sb.append(values[0]);
-		sb.append(",");
+		sb.append("\t");
 		sb.append(values[1]);
-		sb.append(",");
+		sb.append("\t");
 		sb.append(values[2]);
-		sb.append("\n");
+		sb.append("\t\n");
 		return sb.toString();
 	}
 }
