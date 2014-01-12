@@ -6,26 +6,26 @@ import java.util.List;
 
 import pl.edu.agh.mczernek.mandown.filter.FilterFactory;
 import pl.edu.agh.mczernek.mandown.utils.AccelerometerValue;
-import android.util.Log;
 
-public class AccelerometerMeasurementInterpolatedSaver implements
-		AccelerometerMeasurmentSaver {
+public class AccelerometerMeasurementInterpolater implements
+		AccelerometerMeasurmentSolver {
 
 	private long currTime;
 	private long timeStamp;
 
-	private List<AccelerometerValue> allValues;
 	private List<AccelerometerValue> lastTwoValues;
 
-	public AccelerometerMeasurementInterpolatedSaver(long timestamp) {
+	private List<SavedAccelerometerValueListener> valueListenersList;
+
+	public AccelerometerMeasurementInterpolater(long timestamp) {
 		this.timeStamp = timestamp;
 
 		initiaieLists();
 	}
 
 	private void initiaieLists() {
-		allValues = new LinkedList<AccelerometerValue>();
 		lastTwoValues = new ArrayList<AccelerometerValue>(2);
+		valueListenersList = new LinkedList<SavedAccelerometerValueListener>();
 	}
 
 	@Override
@@ -41,24 +41,36 @@ public class AccelerometerMeasurementInterpolatedSaver implements
 		refreshLastTwoValues(toAdd); // Must be in this order ass LastTwoValues
 										// are used to interpolate All values
 										// later.
-		refreshAllValues(toAdd);
+		refreshValues(toAdd);
 	}
 
-	private void refreshAllValues(AccelerometerValue val) {
-		if (allValues.isEmpty()) {
-			addToAllValues(val);
+	@Override
+	public void registerSavedAccelerometerValueListener(
+			SavedAccelerometerValueListener listener) {
+		valueListenersList.add(listener);
+	}
+
+	@Override
+	public void unregisterSavedAccelerometerValueListener(
+			SavedAccelerometerValueListener listener) {
+		valueListenersList.remove(listener);
+	}
+
+	private void refreshValues(AccelerometerValue val) {
+		if (lastTwoValues.size() != 2) {
+			saveValue(val);
 		} else {
 			if (val.getTime() >= currTime + timeStamp) {
-				addInterpolatedValueToAllValues(val.getTime());
+				saveInterpolatedValue(val.getTime());
 			}
 		}
 	}
 
-	private void addInterpolatedValueToAllValues(long time) {
+	private void saveInterpolatedValue(long time) {
 		while (currTime + timeStamp <= time) {
 			currTime += timeStamp;
 		}
-		addToAllValues(interpolatedValues(currTime));
+		saveValue(interpolatedValues(currTime));
 	}
 
 	private AccelerometerValue interpolatedValues(long time) {
@@ -69,10 +81,6 @@ public class AccelerometerMeasurementInterpolatedSaver implements
 
 		float secondFactor = (float) (time - firstValue.getTime()) / timeStamp;
 		float firstFactor = (float) (secondValue.getTime() - time) / timeStamp;
-
-		if (time == allValues.get(allValues.size() - 1).getTime()) {
-			Log.e("TAG", "Sth bad happened!");
-		}
 
 		float interpolatedX = firstFactor * firstValue.getValues()[0]
 				+ secondFactor * secondValue.getValues()[0];
@@ -85,9 +93,22 @@ public class AccelerometerMeasurementInterpolatedSaver implements
 				interpolatedY, interpolatedZ });
 	}
 
-	private void addToAllValues(AccelerometerValue val) {
-		allValues.add(val);
+	private void saveValue(AccelerometerValue val) {
+		refreshTime(val);
+
+		notifyValueListeners(val);
+	}
+
+	private void refreshTime(AccelerometerValue val) {
 		currTime = val.getTime();
+	}
+
+	private void notifyValueListeners(AccelerometerValue val) {
+		if (null != valueListenersList) {
+			for (SavedAccelerometerValueListener lis : valueListenersList) {
+				lis.newValue(val);
+			}
+		}
 	}
 
 	private void refreshLastTwoValues(AccelerometerValue val) {
@@ -95,17 +116,6 @@ public class AccelerometerMeasurementInterpolatedSaver implements
 			lastTwoValues.remove(0);
 		}
 		lastTwoValues.add(val);
-	}
-
-	@Override
-	public void clearState() {
-		lastTwoValues.clear();
-		allValues.clear();
-	}
-
-	@Override
-	public List<AccelerometerValue> getCurrentValues() {
-		return allValues;
 	}
 
 }

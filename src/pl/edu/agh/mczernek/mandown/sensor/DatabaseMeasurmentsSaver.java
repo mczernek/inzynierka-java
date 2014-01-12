@@ -3,10 +3,9 @@ package pl.edu.agh.mczernek.mandown.sensor;
 import java.util.List;
 
 import pl.edu.agh.mczernek.mandown.utils.AccelerometerValue;
-
 import android.content.Context;
 
-public class DatabaseMeasurmentsSaver implements AccelerometerMeasurmentSaver{
+public class DatabaseMeasurmentsSaver implements AccelerometerValueSaver {
 
 	SensorDatabaseManager databaseManager;
 
@@ -15,15 +14,15 @@ public class DatabaseMeasurmentsSaver implements AccelerometerMeasurmentSaver{
 	}
 
 	@Override
-	public void addValue(long time, float[] values) {
-		addValue(new AccelerometerValue(time, values));
-		
+	public void newValue(long time, float[] values) {
+		newValue(new AccelerometerValue(time, values));
+
 	}
 
 	@Override
-	public void addValue(AccelerometerValue val) {
+	public void newValue(AccelerometerValue val) {
 		databaseManager.addValue(val);
-		
+
 	}
 
 	@Override

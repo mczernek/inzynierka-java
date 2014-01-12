@@ -4,14 +4,11 @@ import java.util.List;
 
 import pl.edu.agh.mczernek.mandown.utils.AccelerometerValue;
 
-public interface AccelerometerMeasurmentSaver {
+public interface AccelerometerValueSaver extends
+		SavedAccelerometerValueListener {
 
-	public void addValue(long time, float[] values);
-	
-	public void addValue(AccelerometerValue val);
-	
 	public void clearState();
-	
+
 	public List<AccelerometerValue> getCurrentValues();
-	
+
 }

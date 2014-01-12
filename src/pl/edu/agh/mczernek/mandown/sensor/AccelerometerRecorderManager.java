@@ -7,7 +7,6 @@ import java.util.List;
 
 import pl.edu.agh.mczernek.mandown.MenuButtons;
 import pl.edu.agh.mczernek.mandown.utils.AccelerometerValue;
-
 import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -19,14 +18,19 @@ public class AccelerometerRecorderManager implements SensorEventListener {
 
 	private static final String TAG = "AccelerometerRecordingManager";
 
-	AccelerometerMeasurmentSaver measurmentSaver;
-	MenuButtons buttons;
+	private AccelerometerMeasurmentSolver measurmentSolver;
+	private MenuButtons buttons;
+
+	private AccelerometerValueSaver valueSaver;
 
 	private boolean recordingInProgress = false;
 
 	public AccelerometerRecorderManager(Context context,
 			AccelerometerSensorHandler sensorHandler, MenuButtons buttons) {
-		measurmentSaver = AccelerometerMeasurmentSaverFactory.getDefaultSaver();
+		measurmentSolver = AccelerometerMeasurmentSolverFactory
+				.getDefaultSolver();
+		valueSaver = new AccelerometerRamMeasurmentsSaver();
+		measurmentSolver.registerSavedAccelerometerValueListener(valueSaver);
 		this.buttons = buttons;
 	}
 
@@ -42,7 +46,7 @@ public class AccelerometerRecorderManager implements SensorEventListener {
 
 	public void saveResults(Context context, String filename) {
 		stopRecording();
-		List<AccelerometerValue> values = measurmentSaver.getCurrentValues();
+		List<AccelerometerValue> values = valueSaver.getCurrentValues();
 		File plik = new File(context.getExternalFilesDir(null), filename);
 		try {
 			// plik.createNewFile();
@@ -75,7 +79,7 @@ public class AccelerometerRecorderManager implements SensorEventListener {
 	public void onSensorChanged(SensorEvent event) {
 		if (recordingInProgress) {
 			long time = System.currentTimeMillis();
-			measurmentSaver
+			measurmentSolver
 					.addValue(new AccelerometerValue(time, event.values));
 		}
 	}
