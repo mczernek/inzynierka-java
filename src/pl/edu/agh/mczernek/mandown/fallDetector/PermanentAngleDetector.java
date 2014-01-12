@@ -23,7 +23,8 @@ public class PermanentAngleDetector {
 	public PermanentAngleDetector(long threshold, double tolerance, long period) {
 		this.threshold = threshold;
 		this.tolerance = tolerance;
-		new LinkedList<PermanentAngleListener>();
+		this.period = period;
+		listenersList = new LinkedList<PermanentAngleListener>();
 	}
 
 	public void registerListener(PermanentAngleListener listener) {

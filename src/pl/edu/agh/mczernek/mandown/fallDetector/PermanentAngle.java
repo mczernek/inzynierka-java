@@ -2,29 +2,26 @@ package pl.edu.agh.mczernek.mandown.fallDetector;
 
 public class PermanentAngle {
 
-	private float value;
-	private float prevValue;
-	private float timeStarted;
-	private float timeFinished;
+	private double value;
+	private long timeStarted;
+	private long timeFinished;
+
+	public PermanentAngle(long start, long end, double mean) {
+		timeStarted = start;
+		timeFinished = end;
+		value = mean;
+	}
 
 	public double getValue() {
 		return value;
 	}
 
-	public double getPrevValue() {
-		return prevValue;
-	}
-
-	public double getTimeStarted() {
+	public long getTimeStarted() {
 		return timeStarted;
 	}
 
-	public double getTimeFinished() {
+	public long getTimeFinished() {
 		return timeFinished;
-	}
-
-	public double getValueChange() {
-		return value - prevValue;
 	}
 
 }

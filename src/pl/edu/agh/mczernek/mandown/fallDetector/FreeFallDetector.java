@@ -77,7 +77,6 @@ public class FreeFallDetector implements SavedAccelerometerValueListener {
 		long time = value.getTime();
 		double currentValue = getVectorLength(value.getValues());
 		long countInc = (time - lastTime) / period;
-
 		if (count < threshold) {
 			processDetectingFreeFall(currentValue, countInc);
 		} else {
